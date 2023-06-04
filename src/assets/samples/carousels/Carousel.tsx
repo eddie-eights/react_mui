@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./Carousel.css";
 
@@ -14,17 +14,24 @@ export const Carousel = () => {
   ];
 
   const [activeImage, setActiveImage] = useState(0);
-
   const currentImage = (id: number) => setActiveImage(id);
 
-  const prevImage = () => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      turnNextImage();
+      console.log(activeImage);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [activeImage]);
+
+  const turnPrevImage = () => {
     if (activeImage <= 0) {
       setActiveImage(6);
     } else {
       setActiveImage((prev) => --prev);
     }
   };
-  const nextImage = () => {
+  const turnNextImage = () => {
     if (activeImage >= images.length - 1) {
       setActiveImage(0);
     } else {
@@ -37,8 +44,12 @@ export const Carousel = () => {
         <div className="carousel__main">
           <img src={images[activeImage].img} />
         </div>
-        <div className="carousel__prev" onClick={prevImage}>＜</div>
-        <div className="carousel__next" onClick={nextImage}>＞</div>
+        <div className="carousel__prev" onClick={turnPrevImage}>
+          ＜
+        </div>
+        <div className="carousel__next" onClick={turnNextImage}>
+          ＞
+        </div>
         <ul className="carousel__thumbnails">
           {images.map((img) => (
             <li key={img.id} className={activeImage === img.id ? "current" : ""} onClick={() => currentImage(img.id)}>
